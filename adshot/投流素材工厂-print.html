@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>投流素材工厂 · 设计稿打印版</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: #050506;
+    font-family: "SF Pro Text", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: #e1e1e6;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .doc { padding: 32px 0; }
+
+  /* 封面 */
+  .cover {
+    width: 1440px;
+    margin: 0 auto 32px;
+    padding: 80px;
+    background: linear-gradient(135deg, #0f0f11 0%, #16161a 60%, #1a1f2e 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    break-after: page;
+  }
+  .cover::before {
+    content: ""; position: absolute; right: -100px; top: -100px;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(91,140,255,0.18) 0%, transparent 70%);
+  }
+  .cover .eyebrow { font-size: 11px; color: #b8cfff; letter-spacing: 0.25em; text-transform: uppercase; }
+  .cover h1 {
+    font-size: 56px; font-weight: 700; letter-spacing: -0.03em;
+    margin: 18px 0 16px; line-height: 1.05; color: #f5f5f7;
+  }
+  .cover .sub {
+    font-size: 28px; color: #a1a1aa; font-weight: 400; letter-spacing: -0.01em;
+    line-height: 1.3; margin-bottom: 28px;
+  }
+  .cover p {
+    font-size: 15px; color: #a1a1aa; max-width: 760px;
+    line-height: 1.7;
+  }
+  .meta {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    margin-top: 64px; padding-top: 36px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+  }
+  .meta .l { font-size: 10px; color: #71717a; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+  .meta .v { font-size: 16px; color: #f5f5f7; margin-top: 8px; font-weight: 500; }
+  .toc {
+    margin-top: 48px;
+    padding-top: 36px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .toc-title { font-size: 12px; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 16px; }
+  .toc-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 32px; }
+  .toc-item {
+    display: flex; align-items: baseline; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+  }
+  .toc-item .n { font-family: "SF Mono", monospace; color: #5b8cff; font-size: 11px; min-width: 32px; }
+  .toc-item .t { color: #e1e1e6; flex: 1; }
+  .toc-item .p { color: #71717a; font-family: "SF Mono", monospace; font-size: 11px; }
+
+  /* 章节标题 */
+  .section {
+    width: 1440px; margin: 0 auto 16px;
+    padding: 28px 36px;
+    background: linear-gradient(90deg, #0f0f11 0%, #16161a 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    border-left: 3px solid #5b8cff;
+    page-break-before: always;
+    break-before: page;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  .section .num { font-family: "SF Mono", monospace; font-size: 11px; color: #b8cfff; letter-spacing: 0.1em; }
+  .section .t { font-size: 26px; font-weight: 600; color: #f5f5f7; margin-top: 6px; letter-spacing: -0.02em; }
+  .section .s { font-size: 13px; color: #a1a1aa; margin-top: 8px; line-height: 1.5; }
+
+  /* 页框 */
+  .frame {
+    width: 1440px;
+    margin: 0 auto 24px;
+    background: #0a0a0b;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    overflow: hidden;
+    position: relative;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    page-break-after: always;
+    break-after: page;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+  }
+  .frame .label {
+    position: absolute; top: 14px; right: 18px; z-index: 100;
+    font-size: 11px; color: #a1a1aa;
+    font-family: "SF Mono", monospace;
+    background: rgba(15,15,17,0.92);
+    padding: 5px 11px;
+    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(6px);
+  }
+  .frame iframe {
+    width: 100%;
+    border: none;
+    display: block;
+    background: #0a0a0b;
+  }
+  .frame.h-md iframe { height: 920px; }
+  .frame.h-lg iframe { height: 1280px; }
+  .frame.h-xl iframe { height: 1620px; }
+
+  .frame .caption {
+    padding: 14px 24px;
+    background: #0f0f11;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 12px;
+    color: #71717a;
+    line-height: 1.6;
+  }
+  .frame .caption strong { color: #e1e1e6; font-weight: 500; }
+
+  /* 末页 */
+  .endnote {
+    width: 1440px; margin: 0 auto;
+    padding: 48px 60px;
+    text-align: center;
+    color: #71717a;
+    font-size: 13px;
+  }
+  .endnote .logo {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: linear-gradient(135deg, #5b8cff 0%, #7aa3ff 100%);
+    display: inline-grid; place-items: center;
+    color: white; font-weight: 700; font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  @page {
+    size: 1500px 1000px;
+    margin: 0;
+  }
+  @media print {
+    body { background: white; }
+    .doc { padding: 0; }
+    .cover, .section, .frame, .endnote {
+      width: 100%; border-radius: 0; margin: 0;
+      box-shadow: none; border-left: none; border-right: none;
+    }
+    .frame { page-break-after: always; break-after: page; }
+  }
+</style>
+</head>
+<body>
+
+<div class="doc">
+
+  <!-- 封面 -->
+  <div class="cover">
+    <div class="eyebrow">高保真交互设计稿 · v1.0</div>
+    <h1>投流素材工厂</h1>
+    <div class="sub">AI 电商投流视频批量生成工具 · Web 端</div>
+    <p>面向中小电商卖家(抖音 / 快手 / 视频号小店)的「投流素材工厂」。以效率和批量为核心,而非创作自由度。本文档包含工作台、视频生成 5 步向导、素材库、数据回流四个核心页面共 11 个关键状态的高保真交互稿。</p>
+
+    <div class="meta">
+      <div><div class="l">设计原则</div><div class="v">引导式 · 模板驱动 · 批量优先</div></div>
+      <div><div class="l">视觉系统</div><div class="v">深色工作台(Linear 风)</div></div>
+      <div><div class="l">主色</div><div class="v">中性蓝 #5B8CFF</div></div>
+      <div><div class="l">核心页面</div><div class="v">5 个 / 11 张状态稿</div></div>
+    </div>
+
+    <div class="toc">
+      <div class="toc-title">目录</div>
+      <div class="toc-list">
+        <div class="toc-item"><span class="n">01</span><span class="t">工作台 · 数据 + 快捷生成 + 待优化</span><span class="p">P1</span></div>
+        <div class="toc-item"><span class="n">02-1</span><span class="t">生成向导 · 粘链接(解析中)</span><span class="p">P2</span></div>
+        <div class="toc-item"><span class="n">02-2</span><span class="t">生成向导 · 商品确认 + 卖点</span><span class="p">P3</span></div>
+        <div class="toc-item"><span class="n">02-3</span><span class="t">生成向导 · 选脚本 + 模型档位</span><span class="p">P4</span></div>
+        <div class="toc-item"><span class="n">02-4</span><span class="t">生成向导 · 批量生成中(并行)</span><span class="p">P5</span></div>
+        <div class="toc-item"><span class="n">02-5</span><span class="t">生成向导 · 选片导出</span><span class="p">P6</span></div>
+        <div class="toc-item"><span class="n">03-1</span><span class="t">素材库 · 卡片视图</span><span class="p">P7</span></div>
+        <div class="toc-item"><span class="n">03-2</span><span class="t">素材库 · 列表视图</span><span class="p">P8</span></div>
+        <div class="toc-item"><span class="n">04-1</span><span class="t">数据回流 · 投放总览</span><span class="p">P9</span></div>
+        <div class="toc-item"><span class="n">04-2</span><span class="t">数据回流 · AI 诊断</span><span class="p">P10</span></div>
+        <div class="toc-item"><span class="n">04-3</span><span class="t">数据回流 · A/B 对比</span><span class="p">P11</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 01 工作台 ============ -->
+  <div class="section">
+    <div class="num">01 / 04</div>
+    <div class="t">工作台 · 首页</div>
+    <div class="s">用户进入产品的第一站。粘贴商品链接即可一键启动批量生成,数据概览前置展示哪条素材在赚钱,待优化模块基于回流数据自动诊断疲劳/爆款。</div>
+  </div>
+  <div class="frame h-xl"><div class="label">01 · Home</div>
+    <iframe src="投流素材工厂.html?route=home"></iframe>
+    <div class="caption"><strong>关键交互:</strong>顶部快速粘链接区可直接启动 → 跳转生成向导;数据概览支持今日/7天/30天切换;ROI 趋势小图按批次聚合;待优化卡按风险等级红/黄/绿分级,一键克隆爆款 / 重做疲劳款。</div>
+  </div>
+
+  <!-- ============ 02 生成向导 ============ -->
+  <div class="section">
+    <div class="num">02 / 04</div>
+    <div class="t">视频生成主流程 · 5 步向导</div>
+    <div class="s">粘链接 → 商品确认 → 选脚本 → 生成中 → 选片导出。最少决策点的引导式流程,每一步都可批量化,Credits 消耗实时透明,合规风险分级提示。</div>
+  </div>
+
+  <div class="frame h-md"><div class="label">02-1 · 粘链接(解析中)</div>
+    <iframe src="投流素材工厂.html?route=generate&step=0&parsing=1"></iframe>
+    <div class="caption"><strong>关键交互:</strong>支持淘宝/天猫/京东/拼多多/抖店全平台链接;解析中显示 4 阶段进度(抓取页面 → 解析图文 → 识别卖点 → 生成商品卡),每个阶段独立动画 + 状态标识。</div>
+  </div>
+
+  <div class="frame h-lg"><div class="label">02-2 · 商品确认 + 卖点采集</div>
+    <iframe src="投流素材工厂.html?route=generate&step=1"></iframe>
+    <div class="caption"><strong>关键交互:</strong>左侧 8 张商品图可拖拽排序、删除;右侧 6 条 AI 提取卖点可勾选、编辑、自定义补充;<strong style="color:#f87171">极限词预警</strong>("最佳"、"第一"、"治疗") 红色 chip 标注,点击可一键改写。</div>
+  </div>
+
+  <div class="frame h-lg"><div class="label">02-3 · 选脚本 + 模型 + 参数</div>
+    <iframe src="投流素材工厂.html?route=generate&step=2"></iframe>
+    <div class="caption"><strong>关键交互:</strong>6 种脚本风格(痛点/种草/直给/测评/口播/剧情)× N 数量(支持 1~30 条)× 模型档位(基础 / 高清 / 旗舰),底部 Credits 实时计算且高亮显示总消耗;余额不足时按钮拦截 + 充值入口。</div>
+  </div>
+
+  <div class="frame h-lg"><div class="label">02-4 · 批量生成中(用户最焦虑环节)</div>
+    <iframe src="投流素材工厂.html?route=generate&step=3"></iframe>
+    <div class="caption"><strong>关键交互:</strong>顶部环形总进度 + 已完成数 + 预计剩余时间;每条任务独立卡片显示 4 阶段(脚本 → 渲染 → 编码 → 完成),状态色区分;失败任务可重试,允许用户离开页面后台继续。</div>
+  </div>
+
+  <div class="frame h-lg"><div class="label">02-5 · 选片导出</div>
+    <iframe src="投流素材工厂.html?route=generate&step=4"></iframe>
+    <div class="caption"><strong>关键交互:</strong>9:16 视频网格布局,每张含 AI 评分(画质/卖点契合/合规)+ 时长 + 模型来源;<strong style="color:#fbbf24">合规分级</strong>:低风险弱提示,高风险红色拦截弹窗,需确认才能导出;sticky 底栏支持批量下载/送审/直接对接广告后台。</div>
+  </div>
+
+  <!-- ============ 03 素材库 ============ -->
+  <div class="section">
+    <div class="num">03 / 04</div>
+    <div class="t">我的素材 · 素材库</div>
+    <div class="s">已生成的所有素材集中管理,支持卡片/列表两种密度。投放数据(CTR/ROI)直接挂在素材上,爆款一键克隆为新批次。</div>
+  </div>
+
+  <div class="frame h-lg"><div class="label">03-1 · 卡片视图</div>
+    <iframe src="投流素材工厂.html?route=library&view=grid"></iframe>
+    <div class="caption"><strong>关键交互:</strong>卡片显示视频缩略图、状态徽章(草稿/已投放/爆款/疲劳)、CTR/ROI 内联指标;hover 显示快捷操作;支持多选 → 浮现底部批量操作浮条(克隆/导出/送审/删除)。</div>
+  </div>
+
+  <div class="frame h-lg"><div class="label">03-2 · 列表视图</div>
+    <iframe src="投流素材工厂.html?route=library&view=list"></iframe>
+    <div class="caption"><strong>关键交互:</strong>同样数据的高密度展示,适合批量审核场景;每行显示完整指标列(消耗/GMV/ROI/CTR/CVR),支持排序和列筛选。</div>
+  </div>
+
+  <!-- ============ 04 数据回流 ============ -->
+  <div class="section">
+    <div class="num">04 / 04</div>
+    <div class="t">数据回流 · 投放看板</div>
+    <div class="s">已对接巨量引擎、磁力金牛等第三方广告平台。把"哪条素材能赚钱"放在最显眼位置,AI 诊断给出可执行的下一步动作。</div>
+  </div>
+
+  <div class="frame h-xl"><div class="label">04-1 · 投放总览</div>
+    <iframe src="投流素材工厂.html?route=data&tab=overview"></iframe>
+    <div class="caption"><strong>关键交互:</strong>多平台连接卡(巨量/磁力/视频号/快手),已授权显示同步状态;转化漏斗(曝光 → 点击 → 加购 → 成交),每节点漏失率高亮;底部 Top 素材排行榜按 ROI 降序。</div>
+  </div>
+
+  <div class="frame h-lg"><div class="label">04-2 · AI 诊断</div>
+    <iframe src="投流素材工厂.html?route=data&tab=diagnose"></iframe>
+    <div class="caption"><strong>关键交互:</strong>AI 自动识别四类问题素材(疲劳款 / 低曝光 / 高 CTR 低 CVR / 跑量饱和),每类给出具体诊断 + 一键操作(暂停 / 衍生新批次 / 加大投放)。</div>
+  </div>
+
+  <div class="frame h-lg"><div class="label">04-3 · A/B 对比</div>
+    <iframe src="投流素材工厂.html?route=data&tab=compare"></iframe>
+    <div class="caption"><strong>关键交互:</strong>选取 2 条同源素材并排对比所有指标,差异值高亮;AI 给出一句话结论;可基于优胜者一键克隆衍生 5 条变体继续 A/B。</div>
+  </div>
+
+  <!-- 末页 -->
+  <div class="endnote">
+    <div class="logo">影</div>
+    <div style="color:#e1e1e6; font-size:14px; font-weight:500; margin-bottom:6px;">投流素材工厂 · 设计稿至此结束</div>
+    <div>© 2026 · 高保真交互稿 · 11 张核心页面状态</div>
+  </div>
+
+</div>
+
+<script>
+  // 等所有 iframe 加载完毕,fonts ready,再触发打印
+  function autoPrint() {
+    if (location.hash === "#noprint") return;
+    const frames = Array.from(document.querySelectorAll("iframe"));
+    let loaded = 0;
+    const tryPrint = () => {
+      loaded++;
+      if (loaded >= frames.length) {
+        Promise.all([
+          document.fonts ? document.fonts.ready : Promise.resolve(),
+          new Promise((r) => setTimeout(r, 1500)),
+        ]).then(() => window.print());
+      }
+    };
+    frames.forEach((f) => {
+      if (f.contentDocument && f.contentDocument.readyState === "complete") tryPrint();
+      else f.addEventListener("load", tryPrint, { once: true });
+    });
+    // 兜底:最长 12s 后强制打印
+    setTimeout(() => { if (loaded < frames.length) window.print(); }, 12000);
+  }
+  window.addEventListener("load", autoPrint);
+</script>
+
+</body>
+</html>
