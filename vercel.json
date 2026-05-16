@@ -1,0 +1,18 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/user",
+      "destination": "/adshot/投流素材工厂-user-standalone.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/adshot/投流素材工厂-admin-standalone.html"
+    },
+    {
+      "source": "/app",
+      "destination": "/adshot/投流素材工厂-app.html"
+    }
+  ]
+}
